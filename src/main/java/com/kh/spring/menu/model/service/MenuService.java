@@ -16,6 +16,12 @@ public interface MenuService {
 
 	Menu findById(int id);
 
+	int insertMenu(Menu menu);
+
+	int updateMenu(Menu menu);
+
+	int deleteMenu(int id);
+
 	
 	
 }

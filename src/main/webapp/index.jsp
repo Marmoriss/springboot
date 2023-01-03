@@ -167,12 +167,12 @@ div.result {
 					class="form-check-input" name="taste" id="get-mild" value="mild">
 				<label for="get-mild" class="form-check-label">순한맛</label>
 			</div>
-			<br /> 
-			<input type="submit" class="btn btn-block btn-outline-success btn-send" value="전송">
+			<br /> <input type="submit"
+				class="btn btn-block btn-outline-success btn-send" value="전송">
 		</form>
 	</div>
 	<div class="result" id="menuTypeTaste-result"></div>
-	
+
 	<script>
 	document.menuTypeTasteFrm.addEventListener('submit', (e) => {
 		e.preventDefault();
@@ -199,8 +199,193 @@ div.result {
 		});
 	});
 	</script>
+	<div class="menu-test">
+		<h4>메뉴 등록하기(POST)</h4>
+		<form name="menuEnrollFrm">
+			<input type="text" name="restaurant" placeholder="음식점" class="form-control" required />
+			<br />
+			<input type="text" name="name" placeholder="메뉴" class="form-control" required />
+			<br />
+			<input type="number" name="price" placeholder="가격" class="form-control" required />
+			<br />
+			<div class="form-check form-check-inline">
+				<input type="radio" class="form-check-input" name="type" id="post-kr" value="kr" checked>
+				<label for="post-kr" class="form-check-label">한식</label>&nbsp; 
+				<input type="radio" class="form-check-input" name="type" id="post-ch" value="ch">
+				<label for="post-ch" class="form-check-label">중식</label>&nbsp; 
+				<input type="radio" class="form-check-input" name="type" id="post-jp" value="jp"> 
+				<label for="post-jp" class="form-check-label">일식</label>&nbsp;
+			</div>
+			<br />
+			<div class="form-check form-check-inline">
+				<input type="radio" class="form-check-input" name="taste" id="post-hot" value="hot" checked>
+				<label for="post-hot" class="form-check-label">매운맛</label>&nbsp;
+				<input type="radio" class="form-check-input" name="taste" id="post-mild" value="mild">
+				<label for="post-mild" class="form-check-label">순한맛</label>
+			</div>
+			<br /> 
+			<input type="submit" class="btn btn-block btn-outline-success btn-send" value="등록">
+		</form>
+	</div>
+	<script>
+	document.menuEnrollFrm.addEventListener('submit', (e) => {
+		e.preventDefault(); // 제출 방지
+		
+		const frm = e.target;
+		const restaurant = frm.restaurant.value;
+		const name = frm.name.value;
+		const price = frm.price.value;
+		const type = frm.type.value;
+		const taste = frm.taste.value;
+		const menu = {
+				restaurant, name, price, type, taste
+			};
+		console.log(menu);
+		console.log(JSON.stringify(menu));
+		
+		$.ajax({
+			url : "${pageContext.request.contextPath}/menu",
+			method : "POST",
+			data : JSON.stringify(menu),
+			contentType : 'application/json; charset=utf-8',
+			success(response, textStatus, jqxhr){
+				console.log(response, textStatus, jqxhr);
+				// 응답헤데어 Location 확인
+				const location = jqxhr.getResponseHeader('Location');
+				console.log(location);
+			},
+			error : console.log
+		});
+	});
+	</script>
 	
+	<div class="menu-test">
+		<h4>메뉴 수정하기(PUT)</h4>
+		<p>메뉴번호를 사용해 해당메뉴정보를 수정함.</p>
+		<form id="menuSearchFrm" name="menuSearchFrm">
+			<input type="text" name="id" placeholder="메뉴번호" class="form-control" /><br />
+			<input type="submit" class="btn btn-block btn-outline-primary btn-send" value="검색" >
+		</form>
 	
+		<hr />
+		<form id="menuUpdateFrm" name="menuUpdateFrm">
+			<!-- where조건절에 사용할 id를 담아둠 -->
+			<input type="hidden" name="id" />
+			
+			<input type="text" name="restaurant" placeholder="음식점" class="form-control" />
+			<br />
+			<input type="text" name="name" placeholder="메뉴" class="form-control" />
+			<br />
+			<input type="number" name="price" placeholder="가격" step="1000" class="form-control" />
+			<br />
+			<div class="form-check form-check-inline">
+				<input type="radio" class="form-check-input" name="type" id="put-kr" value="kr" checked>
+				<label for="put-kr" class="form-check-label">한식</label>&nbsp;
+				<input type="radio" class="form-check-input" name="type" id="put-ch" value="ch">
+				<label for="put-ch" class="form-check-label">중식</label>&nbsp;
+				<input type="radio" class="form-check-input" name="type" id="put-jp" value="jp">
+				<label for="put-jp" class="form-check-label">일식</label>&nbsp;
+			</div>
+			<br />
+			<div class="form-check form-check-inline">
+				<input type="radio" class="form-check-input" name="taste" id="put-hot" value="hot" checked>
+				<label for="put-hot" class="form-check-label">매운맛</label>&nbsp;
+				<input type="radio" class="form-check-input" name="taste" id="put-mild" value="mild">
+				<label for="put-mild" class="form-check-label">순한맛</label>
+			</div>
+			<br />
+			<input type="submit" class="btn btn-block btn-outline-success btn-send" value="수정" >
+		</form>
+	</div>
+	<script>
+	document.menuUpdateFrm.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const frm = e.target;
+		const menu = {};
+		menu.id = frm.id.value;
+		menu.restaurant = frm.restaurant.value;
+		menu.name = frm.name.value;
+		menu.price = frm.price.value;
+		menu.type = frm.type.value;
+		menu.taste = frm.taste.value;
+		console.log(menu);
+		console.log(JSON.stringify(menu));
+		
+		$.ajax({
+			url : '${pageContext.request.contextPath}/menu',
+			method : "PUT",
+			data : JSON.stringify(menu),
+			contentType : "application/json; charset=utf-8",
+			success(response){
+				console.log(response);
+				alert(response.resultMessage);
+				e.target.reset();
+			},
+			error : console.log
+		});
+		
+	});
+	
+	document.menuSearchFrm.addEventListener('submit', (e) => {
+		e.preventDefault();
+		
+		const frm = e.target;
+		const id = frm.id.value;
+		console.log(id);
+		if(!id) return;
+		
+		$.ajax({
+			url : `${pageContext.request.contextPath}/menu/\${id}`,
+			method : "GET",
+			success(response){
+				console.log(response);
+				
+				const {id, restaurant, name, price, type, taste} = response;
+				console.log(id, restaurant, name, price, type, taste);
+				
+				const menuUpdateFrm = document.menuUpdateFrm;
+				menuUpdateFrm.id.value = id;
+				menuUpdateFrm.restaurant.value = restaurant;
+				menuUpdateFrm.name.value = name;
+				menuUpdateFrm.price.value = price;
+				menuUpdateFrm.type.value = type;
+				menuUpdateFrm.taste.value = taste;
+			},
+			error(jqxhr, statusText, err){
+				jqxhr.status === 404 && alert("해당 id는 존재하지 않습니다.");
+				console.log(jqxhr, statusText, err);
+			}
+		});
+	});
+	
+	</script>
+	<div class="menu-test">
+        <h4>메뉴 삭제하기(DELETE)</h4>
+        <p>메뉴번호를 사용해 해당메뉴정보를 삭제함.</p>
+        <form id="menuDeleteFrm" name="menuDeleteFrm">
+            <input type="text" name="id" placeholder="메뉴번호" class="form-control" /><br />
+            <input type="submit" class="btn btn-block btn-outline-danger btn-send" value="삭제" >
+        </form>
+    </div>
+    <script>
+    document.menuDeleteFrm.addEventListener('submit', (e) => {
+    	e.preventDefault();
+    	const id = e.target.id.value;
+    	console.log(id);
+    	if(!id) return;
+    	
+    	$.ajax({
+    		url : `${pageContext.request.contextPath}/menu/\${id}`,
+    		method : "DELETE",
+    		success(response){
+    			console.log(response);
+    			alert(response.resultMessage);
+    			e.target.reset();
+    		},
+    		error : console.log
+    	});
+    });
+    </script>
 </div>
 <jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>
 

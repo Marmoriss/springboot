@@ -36,11 +36,20 @@ public class MenuServiceImpl implements MenuService {
 		return menuDao.findById(id);
 	}
 	
+	@Override
+	public int insertMenu(Menu menu) {
+		return menuDao.insertMenu(menu);
+	}
 	
+	@Override
+	public int updateMenu(Menu menu) {
+		return menuDao.updateMenu(menu);
+	}
 	
-	
-	
-	
+	@Override
+	public int deleteMenu(int id) {
+		return menuDao.deleteMenu(id);
+	}
 	
 	
 }
